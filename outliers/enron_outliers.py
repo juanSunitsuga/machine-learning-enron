@@ -15,6 +15,11 @@ from feature_format import featureFormat, targetFeatureSplit
 ### read in data dictionary, convert to numpy array
 data_dict = joblib.load(open("C:\\Users\\ACER\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Week 6\\Mini_Projects\\final_project\\final_project_dataset.pkl", "rb"))
 
+# Remove the TOTAL entry which is a summation row, not an actual person
+if 'TOTAL' in data_dict:
+    del data_dict['TOTAL']
+    print("Removed 'TOTAL' entry from dataset (summation row)")
+
 financialFeatures = ['salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus',
 'restricted_stock_deferred', 'deferred_income', 'total_stock_value', 'expenses',
 'exercised_stock_options', 'other', 'long_term_incentive', 'restricted_stock', 'director_fees']
