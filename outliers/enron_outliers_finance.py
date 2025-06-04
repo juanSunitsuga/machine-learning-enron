@@ -8,12 +8,13 @@ from sklearn.linear_model import LinearRegression
 import numpy
 from pprint import pprint
 from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
-sys.path.append(os.path.abspath("C:/Users/ACER/Documents/KULIAH/Semester 4/Machine Learning/Week 6/tools/"))
+sys.path.append(os.path.abspath("C:/Users/juank/Documents/KULIAH/Semester 4/Machine Learning/Week 6/tools/"))
 from feature_format import featureFormat, targetFeatureSplit
 
 ### read in data dictionary, convert to numpy array
-data_dict = joblib.load(open("C:\\Users\\ACER\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Week 6\\Mini_Projects\\final_project\\final_project_dataset.pkl", "rb"))
+data_dict = joblib.load(open("C:\\Users\\juank\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Tugas Besar\\final_project\\final_project_dataset.pkl", "rb"))
 
 # Remove the TOTAL entry which is a summation row, not an actual person
 if 'TOTAL' in data_dict:
@@ -277,9 +278,3 @@ for feature in selected_features:
     for name, features in data_dict.items():
         if features[feature] != 'NaN' and float(features[feature]) > threshold:
             multi_outliers[name] += 1
-
-# Print people who are outliers in multiple features
-print("\nIndividuals who are outliers in multiple features:")
-for name, count in sorted(multi_outliers.items(), key=lambda x: x[1], reverse=True):
-    if count >= 2:  # At least 2 features
-        print(f"{name}: Outlier in {count} of the 4 selected features")
