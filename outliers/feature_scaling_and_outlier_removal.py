@@ -1,6 +1,8 @@
 import joblib
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
+import pickle
+import csv
 
 # Load dataset
 data_dict = joblib.load(open("c:\\Users\\juank\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Tugas Besar\\final_project\\final_project_dataset.pkl", "rb"))
@@ -70,3 +72,16 @@ for name in outlier_names:
 
 # Save cleaned and scaled data (optional)
 joblib.dump(data_dict, "c:\\Users\\juank\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Tugas Besar\\final_project\\final_project_dataset_cleaned.pkl")
+
+with open("final_project_dataset_modified.pkl", "rb") as f:
+    data = pickle.load(f)
+
+with open("final_project_dataset_modified.csv", "w", newline='') as f:
+    writer = csv.writer(f)
+    # Write header
+    header = ["name"] + list(next(iter(data.values())).keys())
+    writer.writerow(header)
+    # Write rows
+    for name, features in data.items():
+        row = [name] + [features.get(k, "NaN") for k in header[1:]]
+        writer.writerow(row)
