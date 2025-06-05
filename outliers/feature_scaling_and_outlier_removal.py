@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 import pickle
 import csv
+from sklearn.linear_model import LinearRegression
 
 # Load dataset
 data_dict = joblib.load(open("c:\\Users\\juank\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Tugas Besar\\final_project\\final_project_dataset.pkl", "rb"))
@@ -68,6 +69,43 @@ for name in outlier_names:
 
 # Optionally, remove detected outliers
 for name in outlier_names:
+    data_dict.pop(name, None)
+
+# --- Clean finance features using IQR ---
+finance_outlier_names = set()
+for i, feature in enumerate(finance_feature_list):
+    col = scaled_features[:, i]
+    q1 = np.percentile(col, 25)
+    q3 = np.percentile(col, 75)
+    iqr = q3 - q1
+    lower = q1 - 1.5 * iqr
+    upper = q3 + 1.5 * iqr
+    for idx, val in enumerate(col):
+        if val < lower or val > upper:
+            finance_outlier_names.add(names_list[idx])
+
+# Remove finance outliers
+for name in finance_outlier_names:
+    data_dict.pop(name, None)
+
+# --- Clean email features using regression ---
+email_outlier_names = set()
+for i, feature in enumerate(email_feature_list):
+    col = scaled_features[:, len(finance_feature_list) + i]
+    # Use all other email features as predictors
+    X = np.delete(scaled_features[:, len(finance_feature_list):], i, axis=1)
+    y = col
+    reg = LinearRegression()
+    reg.fit(X, y)
+    y_pred = reg.predict(X)
+    residuals = y - y_pred
+    std_res = np.std(residuals)
+    for idx, res in enumerate(residuals):
+        if abs(res) > 3 * std_res:
+            email_outlier_names.add(names_list[idx])
+
+# Remove email outliers
+for name in email_outlier_names:
     data_dict.pop(name, None)
 
 # Save cleaned and scaled data (optional)
