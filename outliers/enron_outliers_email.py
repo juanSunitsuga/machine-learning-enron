@@ -4,6 +4,7 @@ import joblib
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
 sys.path.append(os.path.abspath("C:/Users/juank/Documents/KULIAH/Semester 4/Machine Learning/Week 6/tools/"))
 from feature_format import featureFormat
@@ -58,31 +59,42 @@ plt.figure(figsize=(18, 12))
 plot_num = 1
 for i in range(len(email_features)):
     for j in range(i+1, len(email_features)):
-        plt.subplot(3, 4, plot_num)
         x_feat = email_features[i]
         y_feat = email_features[j]
         xs = []
         ys = []
+        names = []
         for name, features in data_dict.items():
             x = features[x_feat]
             y = features[y_feat]
             if x != 'NaN' and y != 'NaN':
                 xs.append(float(x))
                 ys.append(float(y))
+                names.append(name)
+        xs_np = np.array(xs).reshape(-1, 1)
+        ys_np = np.array(ys)
+        # Fit regression
+        reg = LinearRegression().fit(xs_np, ys_np)
+        preds = reg.predict(xs_np)
+        residuals = np.abs(ys_np - preds)
+        # Find top 5 outliers by residual
+        outlier_indices = residuals.argsort()[-5:][::-1]
+        outlier_names = [names[idx] for idx in outlier_indices]
+        plt.subplot(3, 4, plot_num)
         plt.scatter(xs, ys, color='blue', alpha=0.6, label='Normal')
         # Highlight outliers in red
-        outlier_names = set([n for n, _ in outlier_dict[x_feat]] + [n for n, _ in outlier_dict[y_feat]])
-        for name in outlier_names:
-            fx = data_dict[name][x_feat]
-            fy = data_dict[name][y_feat]
-            if fx != 'NaN' and fy != 'NaN':
-                plt.scatter(float(fx), float(fy), color='red', s=60, edgecolor='k', label='Outlier')
-                plt.annotate(name, (float(fx), float(fy)), fontsize=7, color='red')
+        for idx in outlier_indices:
+            plt.scatter(xs[idx], ys[idx], color='red', s=60, edgecolor='k', label='Outlier')
+            plt.annotate(names[idx], (xs[idx], ys[idx]), fontsize=7, color='red')
+        # Plot regression line
+        x_line = np.linspace(min(xs), max(xs), 100).reshape(-1, 1)
+        y_line = reg.predict(x_line)
+        plt.plot(x_line, y_line, color='green', linestyle='--', linewidth=1)
         plt.xlabel(x_feat)
         plt.ylabel(y_feat)
         plt.tight_layout()
         plot_num += 1
 
-plt.suptitle("Email Feature Outliers (Red = Outlier)", fontsize=16)
-plt.savefig("email_feature_outliers.png", dpi=300, bbox_inches='tight')
+plt.suptitle("Email Feature Outliers by Regression Residuals (Red = Outlier)", fontsize=16)
+plt.savefig("email_feature_outliers_regression.png", dpi=300, bbox_inches='tight')
 plt.show()
