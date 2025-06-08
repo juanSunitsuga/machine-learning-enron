@@ -167,3 +167,134 @@ print("  - final_project_dataset_cleaned.csv (for viewing)")
 final_poi_count = sum(1 for features in data_dict.values() if features.get('poi', 0) == 1)
 print(f"\nFinal POI count: {final_poi_count}")
 print(f"Final Non-POI count: {len(data_dict) - final_poi_count}")
+
+# import pickle
+# import numpy as np
+# from sklearn.preprocessing import MinMaxScaler
+# from sklearn.feature_selection import SelectKBest, f_classif
+# import csv
+
+# # === Load dataset ===
+# import joblib
+# data_dict = joblib.load("D:\\College\\Semester IV\\ML\\Tubes\\machine-learning-enron\\final_project_dataset.pkl")
+
+# print(f"Original dataset size: {len(data_dict)}")
+
+# # === Remove outliers ===
+# for outlier in ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK']:
+#     if outlier in data_dict:
+#         print(f"Removing: {outlier}")
+#         data_dict.pop(outlier)
+
+# print(f"After removing known outliers: {len(data_dict)}")
+
+# # === Define features ===
+# finance_features = [
+#     'salary', 'bonus', 'total_payments', 'long_term_incentive',
+#     'total_stock_value', 'exercised_stock_options', 'expenses'
+# ]
+# email_features = [
+#     'from_poi_to_this_person', 'from_this_person_to_poi', 'shared_receipt_with_poi',
+#     'fraction_from_poi', 'fraction_to_poi', 'fraction_shared_receipt_with_poi'
+# ]
+# all_features = finance_features + email_features
+
+# # === Create fraction features ===
+# for person in data_dict.values():
+#     to_msgs = person.get('to_messages', 'NaN')
+#     from_poi = person.get('from_poi_to_this_person', 'NaN')
+#     from_msgs = person.get('from_messages', 'NaN')
+#     to_poi = person.get('from_this_person_to_poi', 'NaN')
+#     shared = person.get('shared_receipt_with_poi', 'NaN')
+
+#     person['fraction_from_poi'] = float(from_poi) / float(to_msgs) if to_msgs != 'NaN' and from_poi != 'NaN' else 0.0
+#     person['fraction_to_poi'] = float(to_poi) / float(from_msgs) if from_msgs != 'NaN' and to_poi != 'NaN' else 0.0
+#     person['fraction_shared_receipt_with_poi'] = float(shared) / float(to_msgs) if to_msgs != 'NaN' and shared != 'NaN' else 0.0
+
+# # === Remove people with too many NaNs ===
+# min_non_nan = 3
+# to_remove = []
+# for name, features in data_dict.items():
+#     non_nan_count = sum(1 for f in all_features if features.get(f, 'NaN') != 'NaN')
+#     if non_nan_count < min_non_nan:
+#         to_remove.append(name)
+
+# for name in to_remove:
+#     print(f"Removing {name} (too many NaNs)")
+#     data_dict.pop(name)
+
+# print(f"After cleaning for NaNs: {len(data_dict)}")
+
+# # === Prepare features and labels ===
+# feature_matrix = []
+# labels = []
+# names = []
+# for name, person in data_dict.items():
+#     row = [float(person.get(f, 0.0)) if person.get(f, 'NaN') != 'NaN' else 0.0 for f in all_features]
+#     feature_matrix.append(row)
+#     labels.append(int(person.get('poi', 0)))
+#     names.append(name)
+
+# feature_matrix = np.array(feature_matrix)
+# labels = np.array(labels)
+
+# # === Scale features ===
+# scaler = MinMaxScaler()
+# scaled_features = scaler.fit_transform(feature_matrix)
+
+# # === SelectKBest ===
+# selector = SelectKBest(score_func=f_classif, k='all')
+# selector.fit(scaled_features, labels)
+
+# # === Show feature scores ===
+# print("\nFeature scores from SelectKBest:")
+# feature_scores = list(zip(all_features, selector.scores_))
+# sorted_scores = sorted(feature_scores, key=lambda x: x[1], reverse=True)
+# for f, score in sorted_scores:
+#     print(f"{f}: {score:.4f}")
+
+# # === Remove finance outliers conservatively (IQR) ===
+# finance_outlier_names = set()
+# for i, feature in enumerate(finance_features):
+#     col = scaled_features[:, i]
+#     q1 = np.percentile(col, 25)
+#     q3 = np.percentile(col, 75)
+#     iqr = q3 - q1
+#     lower = q1 - 2 * iqr
+#     upper = q3 + 2 * iqr
+#     for idx, val in enumerate(col):
+#         if val < lower or val > upper:
+#             if labels[idx] == 0:
+#                 finance_outlier_names.add(names[idx])
+
+# for name in finance_outlier_names:
+#     print(f"Removing finance outlier: {name}")
+#     data_dict.pop(name, None)
+
+# print(f"After finance outlier removal: {len(data_dict)}")
+
+# # === Save final dataset ===
+# my_feature_list = ['poi'] + all_features
+
+# with open("my_dataset.pkl", "wb") as f:
+#     pickle.dump(data_dict, f)
+
+# with open("my_feature_list.pkl", "wb") as f:
+#     pickle.dump(my_feature_list, f)
+
+# with open("final_project_dataset_cleaned.csv", "w", newline='') as f:
+#     writer = csv.writer(f)
+#     writer.writerow(['name'] + my_feature_list)
+#     for name, features in data_dict.items():
+#         row = [name] + [features.get(k, 'NaN') for k in my_feature_list]
+#         writer.writerow(row)
+
+# print("\nCleaned dataset saved:")
+# print("  - my_dataset.pkl")
+# print("  - my_feature_list.pkl")
+# print("  - final_project_dataset_cleaned.csv")
+
+# # === Final POI count ===
+# final_poi_count = sum(1 for person in data_dict.values() if person.get('poi', 0) == 1)
+# print(f"\nFinal POI count: {final_poi_count}")
+# print(f"Final Non-POI count: {len(data_dict) - final_poi_count}")

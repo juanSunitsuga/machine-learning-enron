@@ -67,13 +67,16 @@ from sklearn.impute import SimpleImputer
 data_dict = joblib.load(open("D:\\College\\Semester IV\\ML\\Tubes\\machine-learning-enron\\final_project_dataset_cleaned.pkl", "rb"))
 
 # Define features
+# Define features
 finance_feature_list = [
     'salary', 'bonus', 'total_payments', 'long_term_incentive',
-    'total_stock_value', 'expenses'
+    'total_stock_value', 'exercised_stock_options', 'expenses'
 ]
 email_feature_list = [
-    'from_poi_to_this_person', 'from_this_person_to_poi', 'shared_receipt_with_poi'
+    'from_poi_to_this_person', 'from_this_person_to_poi', 'shared_receipt_with_poi',
+    'fraction_from_poi', 'fraction_to_poi', 'fraction_shared_receipt_with_poi'
 ]
+
 features_list = ['poi'] + finance_feature_list + email_feature_list
 
 # Prepare data
@@ -108,7 +111,7 @@ param_grid = {
 
 # GridSearchCV with class_weight='balanced'
 grid_search = GridSearchCV(
-    estimator=RandomForestClassifier(random_state=69),
+    estimator=RandomForestClassifier(random_state=96),
     param_grid=param_grid,
     scoring='f1',
     cv=5,
