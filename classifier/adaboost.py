@@ -13,8 +13,10 @@ finance_feature_list = [
     'salary', 'bonus', 'total_payments', 'long_term_incentive',
     'total_stock_value', 'expenses', 'exercised_stock_options'
 ]
+
 email_feature_list = [
-    'from_poi_to_this_person', 'from_this_person_to_poi', 'shared_receipt_with_poi'
+    'from_poi_to_this_person', 'from_this_person_to_poi', 'shared_receipt_with_poi',
+    'fraction_from_poi', 'fraction_to_poi', 'fraction_shared_receipt_with_poi'
 ]
 
 features_list = ['poi'] + finance_feature_list + email_feature_list  # required order

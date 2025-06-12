@@ -21,7 +21,7 @@ email_feature_list = [
 ]
 
 # Remove known non-person outliers
-outliers_to_remove = ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'BHATNAGAR SANJAY']
+outliers_to_remove = ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK']
 for outlier in outliers_to_remove:
     if outlier in data_dict:
         print(f"Removing: {outlier}")
