@@ -6,7 +6,7 @@ import csv
 from sklearn.linear_model import LinearRegression
 
 # Load dataset
-data_dict = joblib.load(open("c:\\Users\\juank\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Tugas Besar\\final_project\\final_project_dataset.pkl", "rb"))
+data_dict = joblib.load(open("D:\Perkuliahan\File Kuliah Semester 4\ML\Tubes\machine-learning-enron\\final_project_dataset.pkl", "rb"))
 
 print(f"Original dataset size: {len(data_dict)}")
 
@@ -21,7 +21,7 @@ email_feature_list = [
 ]
 
 # Remove known non-person outliers
-outliers_to_remove = ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK']
+outliers_to_remove = ['TOTAL', 'THE TRAVEL AGENCY IN THE PARK', 'BHATNAGAR SANJAY']
 for outlier in outliers_to_remove:
     if outlier in data_dict:
         print(f"Removing: {outlier}")
@@ -143,7 +143,7 @@ with open("my_feature_list.pkl", "wb") as f:
     pickle.dump(my_feature_list, f)
 
 # Also save as the cleaned dataset file
-joblib.dump(data_dict, "c:\\Users\\juank\\Documents\\KULIAH\\Semester 4\\Machine Learning\\Tugas Besar\\final_project\\final_project_dataset_cleaned.pkl")
+joblib.dump(data_dict, "D:\Perkuliahan\File Kuliah Semester 4\ML\Tubes\machine-learning-enron\\final_project_dataset_cleaned.pkl")
 
 # Convert to CSV for easy viewing
 with open("final_project_dataset_cleaned.csv", "w", newline='') as f:

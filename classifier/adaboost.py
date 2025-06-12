@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
 
 # Load your cleaned dataset
-data_dict = joblib.load(open("D:\\College\\Semester IV\\ML\\Tubes\\machine-learning-enron\\final_project_dataset_cleaned.pkl", "rb"))
+data_dict = joblib.load(open("D:\\Perkuliahan\\File Kuliah Semester 4\\ML\\Tubes\\machine-learning-enron\\final_project_dataset_cleaned.pkl", "rb"))
 
 # Define features (include 'poi' as the first one!)
 finance_feature_list = [

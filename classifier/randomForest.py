@@ -64,7 +64,7 @@ from sklearn.metrics import classification_report, accuracy_score
 from sklearn.impute import SimpleImputer
 
 # Load cleaned dataset
-data_dict = joblib.load(open("D:\\College\\Semester IV\\ML\\Tubes\\machine-learning-enron\\final_project_dataset_cleaned.pkl", "rb"))
+data_dict = joblib.load(open("D:\\Perkuliahan\\File Kuliah Semester 4\\ML\\Tubes\\machine-learning-enron\\final_project_dataset_cleaned.pkl", "rb"))
 
 # Define features
 # Define features
@@ -111,7 +111,7 @@ param_grid = {
 
 # GridSearchCV with class_weight='balanced'
 grid_search = GridSearchCV(
-    estimator=RandomForestClassifier(random_state=96),
+    estimator=RandomForestClassifier(random_state=96, class_weight='balanced'),
     param_grid=param_grid,
     scoring='f1',
     cv=5,
